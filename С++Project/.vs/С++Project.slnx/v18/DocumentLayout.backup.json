@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3C67BE3C-7321-4247-96D3-5B45AC227365}|\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject.vcxproj|C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\Task16.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{3C67BE3C-7321-4247-96D3-5B45AC227365}|\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject.vcxproj|solutionrelative:\u0421\u002B\u002BProject\\Task16.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{3C67BE3C-7321-4247-96D3-5B45AC227365}|\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject.vcxproj|C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\Task18.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3C67BE3C-7321-4247-96D3-5B45AC227365}|\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject.vcxproj|solutionrelative:\u0421\u002B\u002BProject\\Task18.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Task16.cpp",
-              "DocumentMoniker": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\Task16.cpp",
-              "RelativeDocumentMoniker": "\u0421\u002B\u002BProject\\Task16.cpp",
-              "ToolTip": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\Task16.cpp*",
-              "RelativeToolTip": "\u0421\u002B\u002BProject\\Task16.cpp*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Title": "Task18.cpp",
+              "DocumentMoniker": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\Task18.cpp",
+              "RelativeDocumentMoniker": "\u0421\u002B\u002BProject\\Task18.cpp",
+              "ToolTip": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\Task18.cpp",
+              "RelativeToolTip": "\u0421\u002B\u002BProject\\Task18.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEYAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-12-17T14:54:27.785Z",
+              "WhenOpened": "2025-12-31T13:00:35.124Z",
               "EditorCaption": ""
             }
           ]
