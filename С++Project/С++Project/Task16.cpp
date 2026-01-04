@@ -1,8 +1,14 @@
 #include <iostream>
 using namespace std;
+string Name;
+int Health;
+string Playerclass;
 int main() {
-	cout << "Player name is: "<<"Hector" <<endl;
-	cout << "Health: " <<"100" << endl;
-    cout << "Class: " << "humanity" << endl;
+	cout << "Write player name: " <<endl;
+	cin >> Name;
+	cout << "Write health: " << endl;
+	cin >> Health;
+    cout << "Write Class: " << endl;
+	cin >> Playerclass;
 	return 0;
 }
