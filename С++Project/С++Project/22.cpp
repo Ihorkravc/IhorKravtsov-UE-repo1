@@ -1,75 +1,107 @@
-#include<iostream>
-#include<string>
-#include <vector>
+#include <iostream>
+#include <string>
 using namespace std;
 
-class Weapon {                   
+// ---------------- Weapon ----------------
+class Weapon {
+private:
+    int damage = 60;
+    float cooldown = 1.5f;
+    string icon;
+
 public:
-	int demage = 60;              //Зброя
-	float cooldown = 1.5;
-	std::string icon;
+    int GetDamage() const {
+        return damage;
+    }
 };
 
+// ---------------- PassiveItem ----------------
+class PassiveItem {
+private:
+    int bonusHealth = 15;
+    int bonusIQ = 10;
+    int bonusAgility = 4;
 
-class Enemy {
+
 public:
-	int HealthEnemy = 50;
-	void TakeDemage(int demage) {                            //Ворог
-		HealthEnemy -= demage;
-		if (HealthEnemy <= 0) { HealthEnemy = 0; }
-	} 
+    int GetBonusHealth() const { return bonusHealth; }
+    int GetBonusIQ() const { return bonusIQ; }
+    int GetBonusAgility() const { return bonusAgility; }
 };
 
+// ---------------- Character ----------------
+class Character {
+protected:
+    string name;
+    int health = 40;
+    int IQ = 7;
+    int agility = 5;
 
-class Character{                   //персонаж
-	
-	public: string name;
-	int health=40;
-	int IQ=7;
-	int agility=5;
+    Weapon weapon;
 
-	Weapon weapon;
-	void Attack(Enemy& target) {
-		target.TakeDemage(weapon.demage);
+public:
+    void SetName(const string& newName) {
+        name = newName;
+    }
 
-		cout << name << " attacks Enemy with " << weapon.demage << " demage!" << endl;
-		cout << "Enemy health now: " << target.HealthEnemy << endl;
-	}
+    int GetHealth() const {
+        return health;
+    }
+
+    void ApplyPassiveItem(const PassiveItem& item) {
+        health += item.GetBonusHealth();
+        IQ += item.GetBonusIQ();
+        agility += item.GetBonusAgility();
+    };
+
+    void TakeDamage(int damage) {
+        health -= damage;
+        if (health < 0) health = 0;
+    }
+
+    void Attack(Character& target) {
+        int damage = weapon.GetDamage();
+        target.TakeDamage(damage);
+
+        cout << name << " attacks for " << damage << " damage!" << endl;
+        cout << "Target health: " << target.GetHealth() << endl;
+    }
 };
 
+// ---------------- Enemy ----------------
+class Enemy : public Character {
+public:
+    Enemy() {
+        health = 50;
+        name = "Enemy";
+    }
 
-	class PasiveItem {                                   //Амулети
-    public:
-	int BonusHealth = 15;                                  
-	int BonusIQ = 10;
-	int BonusAgility = 4;
-
-	void apply(Character& Character) {
-		Character.health += BonusHealth;
-		Character.IQ += BonusIQ;
-		Character.agility += BonusAgility;
-	}
+    bool IsDead() const {
+        return health == 0;
+    }
 };
 
+// ---------------- main ----------------
+int main() {
+    Character hero;
+    cout << "Set Hero name: ";
+    string heroName;
+    cin >> heroName;
+    hero.SetName(heroName);
 
-	
-		
+    cout << "Hero health: " << hero.GetHealth() << endl;
 
+    PassiveItem amulet;
+    hero.ApplyPassiveItem(amulet);
 
-	int main() {
-		Character hero;
-		cout << "Set Hero name: ";
-		cin >> hero.name;
-		cout << "Hero health is: " << hero.health <<", IQ: "<<hero.IQ<<", Agility: "<<hero.agility<<endl;
+    cout << "After amulet, hero health: " << hero.GetHealth() << endl;
 
-		PasiveItem amulet;
-		amulet.apply(hero);
-		cout << "Amulet changed abilities:" << endl;
-		cout << "Health: " << hero.health << ", IQ: " << hero.IQ << ", Agility: " << hero.agility << endl;
+    Enemy enemy;
+    hero.Attack(enemy);
 
-		Enemy enemy;
-		hero.Attack(enemy); // Тепер герой атакує ворога
-		if (enemy.HealthEnemy == 0) {
-			cout << "Enemy is dead";}
-		return 0;
-	}
+    if (enemy.IsDead()) {
+        cout << "Enemy is dead!" << endl;
+    }
+
+    return 0;
+}

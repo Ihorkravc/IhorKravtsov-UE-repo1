@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3C67BE3C-7321-4247-96D3-5B45AC227365}|\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject.vcxproj|C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\24 task.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{3C67BE3C-7321-4247-96D3-5B45AC227365}|\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject.vcxproj|solutionrelative:\u0421\u002B\u002BProject\\24 task.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{3C67BE3C-7321-4247-96D3-5B45AC227365}|\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject.vcxproj|C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\22.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3C67BE3C-7321-4247-96D3-5B45AC227365}|\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject.vcxproj|solutionrelative:\u0421\u002B\u002BProject\\22.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\21.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -23,14 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "24 task.cpp",
-              "DocumentMoniker": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\24 task.cpp",
-              "RelativeDocumentMoniker": "\u0421\u002B\u002BProject\\24 task.cpp",
-              "ToolTip": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\24 task.cpp",
-              "RelativeToolTip": "\u0421\u002B\u002BProject\\24 task.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Title": "22.cpp",
+              "DocumentMoniker": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\22.cpp",
+              "RelativeDocumentMoniker": "\u0421\u002B\u002BProject\\22.cpp",
+              "ToolTip": "C:\\Users\\kravc\\Desktop\\Git\\IhorKravtsov-UE-repo1\\\u0421\u002B\u002BProject\\\u0421\u002B\u002BProject\\22.cpp*",
+              "RelativeToolTip": "\u0421\u002B\u002BProject\\22.cpp*",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACkAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-01-25T18:41:11.228Z",
+              "WhenOpened": "2026-02-05T08:51:55.549Z",
               "EditorCaption": ""
             },
             {
@@ -43,7 +43,8 @@
               "RelativeToolTip": "\u0421\u002B\u002BProject\\21.cpp",
               "ViewState": "AgIAADcAAAAAAAAAAAAAAFgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-01-25T12:40:20.118Z"
+              "WhenOpened": "2026-01-25T12:40:20.118Z",
+              "EditorCaption": ""
             }
           ]
         }
