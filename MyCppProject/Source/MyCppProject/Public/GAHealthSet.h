@@ -5,23 +5,41 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GAAttributeSet.h"
+#include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "GAHealthSet.generated.h"
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
+GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 UCLASS()
-class MYCPPPROJECT_API UGAHealthSet : public UGAAttributeSet
+class MYCPPPROJECT_API UGAHealthSet : public UAttributeSet
 {
     GENERATED_BODY()
 
 public:
+
     UGAHealthSet();
 
-    // Атрибут здоров'я
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-    float Health;
+    // Health
+    UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_Health)
+    FGameplayAttributeData Health;
+    ATTRIBUTE_ACCESSORS(UGAHealthSet, Health)
 
-    // Атрибут максимального здоров'я
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-    float MaxHealth;
+        // MaxHealth
+        UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_MaxHealth)
+    FGameplayAttributeData MaxHealth;
+    ATTRIBUTE_ACCESSORS(UGAHealthSet, MaxHealth)
+
+protected:
+
+    UFUNCTION()
+    void OnRep_Health(const FGameplayAttributeData& OldHealth);
+
+    UFUNCTION()
+    void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
+
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
