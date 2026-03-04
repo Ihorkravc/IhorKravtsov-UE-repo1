@@ -35,6 +35,9 @@ public:
 
 protected:
 
+    virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+    virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
     UFUNCTION()
     void OnRep_Health(const FGameplayAttributeData& OldHealth);
 

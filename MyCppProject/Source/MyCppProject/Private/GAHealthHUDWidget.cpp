@@ -1,13 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GAHealthHUDWidget.h"
 #include "AbilitySystemComponent.h"
 #include "GAHealthSet.h"
+#include "TimerManager.h"
+#include "Engine/World.h"
 
 void UGAHealthHUDWidget::InitWithASC(UAbilitySystemComponent* InASC)
 {
-    // якщо вже були прив'язані - відв'яжемось
     UnbindFromAttributes();
 
     ASC = InASC;
@@ -17,14 +15,20 @@ void UGAHealthHUDWidget::InitWithASC(UAbilitySystemComponent* InASC)
     }
 
     BindToAttributes();
-    BroadcastCurrentValues(); // одразу покажемо стартові значення
+
+    // ? Стартове оновлення — на наступний тик, коли ProgressBar точно існує
+    if (UWorld* W = GetWorld())
+    {
+        W->GetTimerManager().SetTimerForNextTick(
+            FTimerDelegate::CreateUObject(this, &UGAHealthHUDWidget::BroadcastCurrentValues)
+        );
+    }
 }
 
 void UGAHealthHUDWidget::BindToAttributes()
 {
     if (!ASC) return;
 
-    // Health changed
     HealthChangedHandle =
         ASC->GetGameplayAttributeValueChangeDelegate(UGAHealthSet::GetHealthAttribute())
         .AddLambda([this](const FOnAttributeChangeData& Data)
@@ -32,7 +36,6 @@ void UGAHealthHUDWidget::BindToAttributes()
                 BroadcastCurrentValues();
             });
 
-    // MaxHealth changed
     MaxHealthChangedHandle =
         ASC->GetGameplayAttributeValueChangeDelegate(UGAHealthSet::GetMaxHealthAttribute())
         .AddLambda([this](const FOnAttributeChangeData& Data)
@@ -74,6 +77,5 @@ void UGAHealthHUDWidget::NativeDestruct()
 {
     UnbindFromAttributes();
     ASC = nullptr;
-
     Super::NativeDestruct();
 }

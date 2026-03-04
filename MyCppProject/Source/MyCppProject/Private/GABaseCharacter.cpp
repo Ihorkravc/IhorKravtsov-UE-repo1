@@ -1,12 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "GABaseCharacter.h"
-
+#include "GAHealthHUDWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "AbilitySystemComponent.h"
 #include "GAHealthSet.h"
-
 #include "GameplayAbilitySpec.h" // для FGameplayAbilitySpec
+#include "Engine/Engine.h" 
 
 AGABaseCharacter::AGABaseCharacter()
 {
@@ -17,6 +15,10 @@ AGABaseCharacter::AGABaseCharacter()
     AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
     HealthSet = CreateDefaultSubobject<UGAHealthSet>(TEXT("HealthSet"));
+    if (AbilitySystemComponent && HealthSet)
+    {
+        AbilitySystemComponent->AddAttributeSetSubobject(HealthSet);
+    }
 }
 
 UAbilitySystemComponent* AGABaseCharacter::GetAbilitySystemComponent() const
@@ -42,22 +44,60 @@ void AGABaseCharacter::BeginPlay()
 
     // 3) Ініціалізуємо атрибути
     InitializeAttributes();
+
+  
+    if (IsLocallyControlled() && HealthHUDClass)
+    {
+        HealthHUDInstance = CreateWidget<UGAHealthHUDWidget>(GetWorld(), HealthHUDClass);
+        if (HealthHUDInstance)
+        {
+            HealthHUDInstance->AddToViewport();
+            HealthHUDInstance->InitWithASC(AbilitySystemComponent);
+        }
+    }
 }
 
 void AGABaseCharacter::InitializeAttributes()
 {
     if (HealthSet)
     {
-        // тимчасово: стартові значення
         HealthSet->SetMaxHealth(100.f);
-        HealthSet->SetHealth(HealthSet->GetMaxHealth());
+        HealthSet->SetHealth(50.f);
+       // HealthSet->SetHealth(HealthSet->GetMaxHealth());
     }
 }
 
 void AGABaseCharacter::UseMedkit()
 {
-    if (AbilitySystemComponent && MedkitAbilityClass)
+    if (GEngine)
     {
-        AbilitySystemComponent->TryActivateAbilityByClass(MedkitAbilityClass);
+        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("UseMedkit CALLED"));
     }
+
+    if (!AbilitySystemComponent)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ASC is NULL"));
+        return;
+    }
+
+    if (!MedkitAbilityClass)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("MedkitAbilityClass is NULL"));
+        return;
+    }
+
+    const bool bHasSpec =
+        (AbilitySystemComponent->FindAbilitySpecFromClass(MedkitAbilityClass) != nullptr);
+
+    const float Before =
+        AbilitySystemComponent->GetNumericAttribute(UGAHealthSet::GetHealthAttribute());
+
+    const bool bActivated =
+        AbilitySystemComponent->TryActivateAbilityByClass(MedkitAbilityClass);
+
+    const float After =
+        AbilitySystemComponent->GetNumericAttribute(UGAHealthSet::GetHealthAttribute());
+
+    UE_LOG(LogTemp, Warning, TEXT("HasSpec=%d Activated=%d Health: %f -> %f"),
+        (int32)bHasSpec, (int32)bActivated, Before, After);
 }

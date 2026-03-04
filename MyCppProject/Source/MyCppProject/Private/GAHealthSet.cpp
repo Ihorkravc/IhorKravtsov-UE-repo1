@@ -1,14 +1,37 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "GAHealthSet.h"
 #include "Net/UnrealNetwork.h"
+#include "GameplayEffectExtension.h"
+#include "AbilitySystemComponent.h"
 
 UGAHealthSet::UGAHealthSet()
 {
-    // ²ν³φ³ΰλ³ηΰφ³ÿ ηνΰχενό
-    Health = 100.f;
-    MaxHealth = 100.f;
 }
+
+void UGAHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+    Super::PreAttributeChange(Attribute, NewValue);
+
+    if (Attribute == GetHealthAttribute())
+    {
+        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+    }
+    else if (Attribute == GetMaxHealthAttribute())
+    {
+        NewValue = FMath::Max(NewValue, 1.f);
+        SetHealth(FMath::Clamp(GetHealth(), 0.f, NewValue));
+    }
+}
+
+void UGAHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+    Super::PostGameplayEffectExecute(Data);
+
+    if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+    {
+        SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+    }
+}
+
 
 void UGAHealthSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
 {
@@ -27,6 +50,4 @@ void UGAHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
     DOREPLIFETIME_CONDITION_NOTIFY(UGAHealthSet, Health, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UGAHealthSet, MaxHealth, COND_None, REPNOTIFY_Always);
 }
-
-
 

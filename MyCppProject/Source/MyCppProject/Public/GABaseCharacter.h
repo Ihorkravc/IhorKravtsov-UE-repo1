@@ -9,6 +9,7 @@
 class UAbilitySystemComponent;
 class UGAHealthSet;
 class UGameplayAbility;
+class UGAHealthHUDWidget;
 
 UCLASS()
 class MYCPPPROJECT_API AGABaseCharacter
@@ -32,15 +33,23 @@ protected:
 
     // Ability System Component
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
-    UAbilitySystemComponent* AbilitySystemComponent;
+    UAbilitySystemComponent* AbilitySystemComponent = nullptr;
 
     // Health Attribute Set
     UPROPERTY()
-    UGAHealthSet* HealthSet;
+    UGAHealthSet* HealthSet = nullptr;
 
     // яку ability видати персонажу €к "аптечку" (в Editor ставиш BP_GA_Medkit)
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS|Abilities")
     TSubclassOf<UGameplayAbility> MedkitAbilityClass;
 
     void InitializeAttributes();
+
+    // HUD клас (€кий будемо ставити в BP)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS|UI")
+    TSubclassOf<UGAHealthHUDWidget> HealthHUDClass;
+
+    // ≤нстанс в≥джета
+    UPROPERTY(VisibleInstanceOnly, Category = "GAS|UI")
+    UGAHealthHUDWidget* HealthHUDInstance = nullptr;
 };
