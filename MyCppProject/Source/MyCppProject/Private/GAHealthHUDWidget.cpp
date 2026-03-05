@@ -79,3 +79,7 @@ void UGAHealthHUDWidget::NativeDestruct()
     ASC = nullptr;
     Super::NativeDestruct();
 }
+void UGAHealthHUDWidget::UpdateMedkit(int32 NewCharges, int32 InMaxCharges)
+{
+    OnMedkitChanged(NewCharges, InMaxCharges);
+}

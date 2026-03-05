@@ -5,7 +5,6 @@
 #include "AbilitySystemInterface.h"
 #include "GABaseCharacter.generated.h"
 
-// Forward declarations
 class UAbilitySystemComponent;
 class UGAHealthSet;
 class UGameplayAbility;
@@ -21,35 +20,54 @@ class MYCPPPROJECT_API AGABaseCharacter
 public:
     AGABaseCharacter();
 
-    // GAS interface
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-    // Виклик аптечки (можна викликати з Blueprint)
     UFUNCTION(BlueprintCallable, Category = "GAS|Medkit")
     void UseMedkit();
+
+    UFUNCTION(BlueprintCallable, Category = "GAS|Medkit")
+    void AddMedkit(int32 Amount = 1);
 
 protected:
     virtual void BeginPlay() override;
 
-    // Ability System Component
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
     UAbilitySystemComponent* AbilitySystemComponent = nullptr;
 
-    // Health Attribute Set
     UPROPERTY()
     UGAHealthSet* HealthSet = nullptr;
 
-    // Яку ability видати персонажу як "аптечку" (в Editor ставиш BP_GA_Medkit)
+    // ? Лічильник аптечок (реплікується)
+    UPROPERTY(ReplicatedUsing = OnRep_MedkitCharges, BlueprintReadOnly, Category = "GAS|Medkit")
+    int32 MedkitCharges = 0;
+
+    // ? Ліміт аптечок (до 5)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS|Medkit")
+    int32 MaxMedkitCharges = 5;
+
+    UFUNCTION()
+    void OnRep_MedkitCharges();
+
+    // Ability, яка застосовує GE_Heal
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS|Abilities")
     TSubclassOf<UGameplayAbility> MedkitAbilityClass;
 
-    void InitializeAttributes();
-
-    // HUD клас (який будемо ставити в BP)
+    // UI
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS|UI")
     TSubclassOf<UGAHealthHUDWidget> HealthHUDClass;
 
-    // Інстанс віджета
     UPROPERTY(VisibleInstanceOnly, Category = "GAS|UI")
     UGAHealthHUDWidget* HealthHUDInstance = nullptr;
+
+    void InitializeAttributes();
+    void UpdateMedkitHUD();
+
+    // RPC (щоб клієнт міг просити сервер)
+    UFUNCTION(Server, Reliable)
+    void ServerUseMedkit();
+
+    UFUNCTION(Server, Reliable)
+    void ServerAddMedkit(int32 Amount);
+
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

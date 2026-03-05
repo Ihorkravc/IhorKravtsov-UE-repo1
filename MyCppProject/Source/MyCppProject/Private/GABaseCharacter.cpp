@@ -1,10 +1,12 @@
-#include "GABaseCharacter.h"
+﻿#include "GABaseCharacter.h"
+
+#include "AbilitySystemComponent.h"
+#include "GameplayAbilitySpec.h"
+#include "Net/UnrealNetwork.h"
+
+#include "GAHealthSet.h"
 #include "GAHealthHUDWidget.h"
 #include "Blueprint/UserWidget.h"
-#include "AbilitySystemComponent.h"
-#include "GAHealthSet.h"
-#include "GameplayAbilitySpec.h" // ��� FGameplayAbilitySpec
-#include "Engine/Engine.h" 
 
 AGABaseCharacter::AGABaseCharacter()
 {
@@ -15,10 +17,6 @@ AGABaseCharacter::AGABaseCharacter()
     AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
     HealthSet = CreateDefaultSubobject<UGAHealthSet>(TEXT("HealthSet"));
-    if (AbilitySystemComponent && HealthSet)
-    {
-        AbilitySystemComponent->AddAttributeSetSubobject(HealthSet);
-    }
 }
 
 UAbilitySystemComponent* AGABaseCharacter::GetAbilitySystemComponent() const
@@ -30,29 +28,22 @@ void AGABaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    // 1) ������������ GAS
     if (AbilitySystemComponent)
     {
         AbilitySystemComponent->InitAbilityActorInfo(this, this);
     }
 
-    // 2) ������ ������� �� ability (����� ������)
-    if (HasAuthority() && AbilitySystemComponent && MedkitAbilityClass)
-    {
-        AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(MedkitAbilityClass, 1, 0));
-    }
-
-    // 3) ����������� ��������
     InitializeAttributes();
 
-  
-    if (IsLocallyControlled() && HealthHUDClass)
+    // HUD тільки локальному гравцю
+    if (IsLocallyControlled() && HealthHUDClass && AbilitySystemComponent)
     {
         HealthHUDInstance = CreateWidget<UGAHealthHUDWidget>(GetWorld(), HealthHUDClass);
         if (HealthHUDInstance)
         {
             HealthHUDInstance->AddToViewport();
             HealthHUDInstance->InitWithASC(AbilitySystemComponent);
+            UpdateMedkitHUD(); // ✅ стартове оновлення
         }
     }
 }
@@ -63,41 +54,92 @@ void AGABaseCharacter::InitializeAttributes()
     {
         HealthSet->SetMaxHealth(100.f);
         HealthSet->SetHealth(50.f);
-       // HealthSet->SetHealth(HealthSet->GetMaxHealth());
+    }
+}
+
+void AGABaseCharacter::UpdateMedkitHUD()
+{
+    if (HealthHUDInstance)
+    {
+        // ✅ Викликаємо ПУБЛІЧНИЙ міст, а не BlueprintEvent напряму
+        HealthHUDInstance->UpdateMedkit(MedkitCharges, MaxMedkitCharges);
     }
 }
 
 void AGABaseCharacter::UseMedkit()
 {
-    if (GEngine)
+    // клієнт -> сервер
+    if (!HasAuthority())
     {
-        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("UseMedkit CALLED"));
-    }
-
-    if (!AbilitySystemComponent)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("ASC is NULL"));
+        ServerUseMedkit();
         return;
     }
 
-    if (!MedkitAbilityClass)
+    if (!AbilitySystemComponent || !MedkitAbilityClass)
+        return;
+
+    if (MedkitCharges <= 0)
+        return;
+
+    // Має бути видана ability (її будемо видавати коли підібрав аптечку)
+    FGameplayAbilitySpec* Spec = AbilitySystemComponent->FindAbilitySpecFromClass(MedkitAbilityClass);
+    if (!Spec)
+        return;
+
+    const bool bActivated = AbilitySystemComponent->TryActivateAbilityByClass(MedkitAbilityClass);
+
+    if (bActivated)
     {
-        UE_LOG(LogTemp, Warning, TEXT("MedkitAbilityClass is NULL"));
+        MedkitCharges = FMath::Clamp(MedkitCharges - 1, 0, MaxMedkitCharges);
+        UpdateMedkitHUD(); // ✅ сервер теж може оновити для локального (в синглі)
+    }
+}
+
+void AGABaseCharacter::AddMedkit(int32 Amount)
+{
+    if (!HasAuthority())
+    {
+        ServerAddMedkit(Amount);
         return;
     }
 
-    const bool bHasSpec =
-        (AbilitySystemComponent->FindAbilitySpecFromClass(MedkitAbilityClass) != nullptr);
+    if (Amount <= 0)
+        return;
 
-    const float Before =
-        AbilitySystemComponent->GetNumericAttribute(UGAHealthSet::GetHealthAttribute());
+    MedkitCharges = FMath::Clamp(MedkitCharges + Amount, 0, MaxMedkitCharges);
 
-    const bool bActivated =
-        AbilitySystemComponent->TryActivateAbilityByClass(MedkitAbilityClass);
+    // Видаємо ability тільки коли аптечки реально є
+    if (AbilitySystemComponent && MedkitAbilityClass)
+    {
+        const bool bHasSpec = (AbilitySystemComponent->FindAbilitySpecFromClass(MedkitAbilityClass) != nullptr);
+        if (!bHasSpec)
+        {
+            AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(MedkitAbilityClass, 1, 0));
+        }
+    }
 
-    const float After =
-        AbilitySystemComponent->GetNumericAttribute(UGAHealthSet::GetHealthAttribute());
+    UpdateMedkitHUD();
+}
 
-    UE_LOG(LogTemp, Warning, TEXT("HasSpec=%d Activated=%d Health: %f -> %f"),
-        (int32)bHasSpec, (int32)bActivated, Before, After);
+void AGABaseCharacter::OnRep_MedkitCharges()
+{
+    // Викликається на клієнтах при зміні
+    UpdateMedkitHUD();
+}
+
+void AGABaseCharacter::ServerUseMedkit_Implementation()
+{
+    UseMedkit();
+}
+
+void AGABaseCharacter::ServerAddMedkit_Implementation(int32 Amount)
+{
+    AddMedkit(Amount);
+}
+
+void AGABaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AGABaseCharacter, MedkitCharges);
 }
