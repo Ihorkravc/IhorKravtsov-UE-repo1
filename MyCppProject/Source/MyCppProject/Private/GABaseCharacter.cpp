@@ -50,10 +50,10 @@ void AGABaseCharacter::BeginPlay()
 
 void AGABaseCharacter::InitializeAttributes()
 {
-    if (HealthSet)
+    if (AbilitySystemComponent)
     {
-        HealthSet->SetMaxHealth(100.f);
-        HealthSet->SetHealth(50.f);
+        AbilitySystemComponent->SetNumericAttributeBase(UGAHealthSet::GetMaxHealthAttribute(), 100.f);
+       
     }
 }
 
@@ -119,6 +119,13 @@ void AGABaseCharacter::AddMedkit(int32 Amount)
     }
 
     UpdateMedkitHUD();
+}
+void AGABaseCharacter::SetInitialHealth(float NewHealth)
+{
+    if (AbilitySystemComponent)
+    {
+        AbilitySystemComponent->SetNumericAttributeBase(UGAHealthSet::GetHealthAttribute(), NewHealth);
+    }
 }
 
 void AGABaseCharacter::OnRep_MedkitCharges()

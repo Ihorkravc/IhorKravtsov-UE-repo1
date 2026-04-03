@@ -28,6 +28,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "GAS|Medkit")
     void AddMedkit(int32 Amount = 1);
 
+    UFUNCTION(BlueprintCallable, Category = "GAS|Setup")
+    void SetInitialHealth(float NewHealth);
+
 protected:
     virtual void BeginPlay() override;
 
